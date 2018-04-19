@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Login</title>
+    {% load static %}
+</head>
+<body>
+    <div class="container">
+            <form action='/register' method='POST'>
+                {% csrf_token %}
+                <h3>Register</h3>
+                First Name:<input type="text" name="first_name" id="first_name">
+                <p>Last Name:<input type="text" name="last_name" id="last_name">
+                <p>Email:<input type="text" name="email" id="email">
+                <p>Password:<input type="password" name="password" id="password">
+                <p>Confim Password:<input type="password" name="conf" id="conf">
+                <p><input type="submit" value="Register">
+            </form>
+        </div>
+        <div class="container2"> 
+            <form action='/login' method='POST'>
+                {% csrf_token %}
+                <h3>Login</h3>
+                Email:<input type="text" name="email" id="email">
+                <p>Password:<input type="password" name="password" id="password">                
+                <p><input type="submit" value="Login">
+            </form>
+
+
+<!-- Here we show reg users -->
+            {% for user in users %}
+                {{ user.first_name}} {{user.last_name }}
+            {%endfor%}
+
+
+<!-- Here we can flash error messages like this: -->
+        
+            {% if messages %}
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        
+            
+</body>
+</html>
