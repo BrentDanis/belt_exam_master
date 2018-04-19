@@ -10,7 +10,12 @@ class UsersManager(models.Manager):
 		errors = {}
 		if len(postData['email']) < 1:
 			errors['email']="Email cannot be empty!"
-			
+		if len(postData['first_name']) < 2:
+			errors['first_name']="First Name must be at least 2 characters."	
+		if len(postData['last_name']) < 2:
+			errors['last_name']="Last Name must be at least 2 characters."
+		if len(postData['password']) < 8:
+			errors['password']="Password must be at least 8 characters."
 		elif not EMAIL_REGEX.match(postData['email']):
 			errors['email']="Invalid Email Address!"
 		return errors

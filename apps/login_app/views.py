@@ -1,4 +1,5 @@
 from django.shortcuts import render, HttpResponse, redirect
+from django.contrib import messages
 from .models import Users
 import bcrypt
 
@@ -11,23 +12,23 @@ def login(request):
 	pass
 
 def register(request):
-	if request.method=='POST':
-		print "we hit register Post"
-    	errors = Users.objects.basic_validator(request.POST)
-    	if len(errors):
-            for tag, error in errors.iteritems():
-                messages.error(request, error, extra_tags=tag)
-        	return redirect(index)
-            # return redirect('/loggedin'+id)
-        
-        else:
-		users = Users()
-		users.first_name = request.POST['first_name']
-		users.last_name = request.POST['last_name']
-		users.email = request.POST['email']
-		users.password = bcrypt.hashpw(request.POST['password'].encode(), bcrypt.gensalt())
-		users.save()
-		return redirect(index)
+    if request.method == 'POST':
+        print "we hit register Post"
+    errors = Users.objects.basic_validator(request.POST)
+    if len(errors):
+        for tag, error in errors.iteritems():
+            messages.error(request, error, extra_tags=tag)
+        return redirect("/")
+        # return redirect('/loggedin'+id)
+
+    else:
+        users = Users()
+        users.first_name = request.POST['first_name']
+        users.last_name = request.POST['last_name']
+        users.email = request.POST['email']
+        users.password = bcrypt.hashpw(request.POST['password'].encode(), bcrypt.gensalt())
+        users.save()
+        return redirect(index)
 
 
 
