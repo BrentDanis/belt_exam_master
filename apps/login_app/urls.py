@@ -5,5 +5,5 @@ urlpatterns = [
 	#this is passing to views.py
     url(r'^$', views.index ),
     url(r'^register', views.register ),
-    # url(r'^login', views.login ),
+    url(r'^login', views.login ),
 ]

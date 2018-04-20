@@ -2,12 +2,15 @@ from __future__ import unicode_literals
 from django.db import models
 from django import forms
 import re
+import bcrypt
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 #adding data base structure (think excel headers)
 
 class UsersManager(models.Manager):
 	def basic_validator(self, postData):
 		errors = {}
+		if Users.objects.filter(email=postData['email']).count() > 0:
+			errors['email'] = "This email {} already exist".format(postData['email'])
 		if len(postData['email']) < 1:
 			errors['email']="Email cannot be empty!"
 		if len(postData['first_name']) < 2:
@@ -18,7 +21,26 @@ class UsersManager(models.Manager):
 			errors['password']="Password must be at least 8 characters."
 		elif not EMAIL_REGEX.match(postData['email']):
 			errors['email']="Invalid Email Address!"
+
 		return errors
+	def login_validator(self, postData):
+		errors = {}
+		check_email = postData['email']
+		check_password = postData['password']
+		print("\n##################\n", check_email, check_password, "\n##################\n")
+		me = Users.objects.get(email=check_email)
+		print me.password
+		try:
+			clog = bcrypt.checkpw(postData['password'].encode(), (me.password).encode())
+		except Exception as e:
+			clog = False
+		print clog
+		# if False:
+		# 	errors['password'] = "This password is STUPID"
+		# elif Users.objects.filter(email=postData['email']).count() == 0:
+		# 	errors['email'] = "This email {} doesn't exist in our system".format(postData['email'])
+		return errors 
+
 
 
 class Users(models.Model):
@@ -30,7 +52,7 @@ class Users(models.Model):
 	updated_at=models.DateTimeField(auto_now=True)
 	objects = UsersManager()
 	def __str__(self):
-		return "<Users object: {} {}>".format(self.first_name, self.last_name)
+		return "\n---------------\nFIRST: {}\nLAST: {}\nEMAIL: {}\nPASSWORD: {}\n---------------\n".format(self.first_name, self.last_name, self.email, self.password)
 
 
 

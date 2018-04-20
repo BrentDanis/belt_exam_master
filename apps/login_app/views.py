@@ -9,26 +9,36 @@ def index ( request ):
 	return render( request, "login_app/index.html")
 
 def login(request):
-	pass
+	errors = {}
+	errors = Users.objects.login_validator(request.POST)
+	if len(errors):
+		for tag, error in errors.iteritems():
+			messages.error(request, error, extra_tags=tag)
+	if len(errors) == 0:
+		print '############# we hit success'
+		return render('login_app/succcess.html')
+	return redirect('/')
 
 def register(request):
-    if request.method == 'POST':
-        print "we hit register Post"
-    errors = Users.objects.basic_validator(request.POST)
-    if len(errors):
-        for tag, error in errors.iteritems():
-            messages.error(request, error, extra_tags=tag)
-        return redirect("/")
-        # return redirect('/loggedin'+id)
+	if request.method == 'POST':
+		print "we hit register Post"
+	errors = Users.objects.basic_validator(request.POST)
+	if len(errors):
+		for tag, error in errors.iteritems():
+			messages.error(request, error, extra_tags=tag)
+		return redirect("/")
+		# return redirect('/loggedin'+id)
 
-    else:
-        users = Users()
-        users.first_name = request.POST['first_name']
-        users.last_name = request.POST['last_name']
-        users.email = request.POST['email']
-        users.password = bcrypt.hashpw(request.POST['password'].encode(), bcrypt.gensalt())
-        users.save()
-        return redirect(index)
+	else:
+		users = Users()
+		users.first_name = request.POST['first_name']
+		users.last_name = request.POST['last_name']
+		users.email = request.POST['email']
+		users.password = bcrypt.hashpw(request.POST['password'].encode(), bcrypt.gensalt())
+		users.save()
+		return redirect('/')
+
+
 
 
 
