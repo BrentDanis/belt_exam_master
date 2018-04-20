@@ -9,15 +9,17 @@ def index ( request ):
 	return render( request, "login_app/index.html")
 
 def login(request):
-	errors = {}
+	
 	errors = Users.objects.login_validator(request.POST)
 	if len(errors):
 		for tag, error in errors.iteritems():
 			messages.error(request, error, extra_tags=tag)
-	if len(errors) == 0:
-		print '############# we hit success'
-		return render('login_app/succcess.html')
-	return redirect('/')
+		print 'we hit this due to invalid email'
+		return redirect( '/')
+	
+	print '############# we hit success'
+	return render(request,'login_app/success.html')
+	
 
 def register(request):
 	if request.method == 'POST':
